@@ -3,7 +3,7 @@
 mkdir build
 mkdir install
 
-cmake -DCMAKE_INSTALL_PREFIX="${SRC_DIR}/install" \
+cmake ${CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX="${SRC_DIR}/install" \
     -S ${SRC_DIR}/level-zero \
     -B ${SRC_DIR}/build \
     -Wno-dev
