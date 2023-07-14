@@ -3,6 +3,7 @@ About level-zero-feedstock
 
 Feedstock license: [BSD-3-Clause](https://github.com/conda-forge/level-zero-feedstock/blob/main/LICENSE.txt)
 
+
 About level-zero
 ----------------
 
@@ -11,6 +12,7 @@ Home: https://github.com/oneapi-src/level-zero
 Package license: MIT
 
 Summary: Intel(R) level zero libraries
+
 About level-zero
 ----------------
 
@@ -19,6 +21,7 @@ Home: https://github.com/oneapi-src/level-zero
 Package license: MIT
 
 oneAPI Level Zero
+
 
 About level-zero-devel
 ----------------------
