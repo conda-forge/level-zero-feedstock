@@ -3,10 +3,10 @@ mkdir build
 mkdir install
 
 cmake -G Ninja -DCMAKE_INSTALL_PREFIX="install" ^
-    -S ${SRC_DIR}\level-zero ^
+    -S "%SRC_DIR%\level-zero" ^
     -B build ^
     -Wno-dev
 
-cmake --build ${SRC_DIR}/build --config Release
-cmake --build ${SRC_DIR}/build --config Release --target install
+cmake --build build --config Release
+cmake --build build --config Release --target install
 
