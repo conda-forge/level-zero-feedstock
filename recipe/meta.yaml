@@ -12,19 +12,20 @@ source:
     folder: level-zero
 
 build:
-  number: 0
-  skip: true  # [not (x86 and (linux))]
+  number: 1
+  skip: true  # [not (x86 and (linux or win))]
 
 requirements:
   build:
     - {{ compiler('cxx') }}
     - cmake
-    - make
+    - ninja
 
 outputs:
   - name: level-zero
     version: {{ version }}
-    script: move-level-zero.sh
+    script: move-level-zero.sh  # [linux]
+    script: move-level-zero.bat  # [win]
     requirements:
       build:
         - {{ compiler('cxx') }}
@@ -36,16 +37,18 @@ outputs:
         oneAPI Level Zero
     test:
       commands:
-        - ls -A1 ${PREFIX}/lib   # [linux]
-        - test -f ${PREFIX}/lib/libze_loader.so.1   # [linux]
-        - test -f ${PREFIX}/lib/libze_loader.so.{{ test_version }}   # [linux]
-        - test -f ${PREFIX}/lib/libze_tracing_layer.so.1   # [linux]
-        - test -f ${PREFIX}/lib/libze_tracing_layer.so.{{ test_version }}   # [linux]
-        - test -f ${PREFIX}/lib/libze_validation_layer.so.1   # [linux]
-        - test -f ${PREFIX}/lib/libze_validation_layer.so.{{ test_version }}   # [linux]
+        - ls -A1 ${PREFIX}/lib  # [linux]
+        - dir "%LIBRARY_BIN%"  # [win]
+        - test -f ${PREFIX}/lib/libze_loader.so.1  # [linux]
+        - test -f ${PREFIX}/lib/libze_loader.so.{{ test_version }}  # [linux]
+        - test -f ${PREFIX}/lib/libze_tracing_layer.so.1  # [linux]
+        - test -f ${PREFIX}/lib/libze_tracing_layer.so.{{ test_version }}  # [linux]
+        - test -f ${PREFIX}/lib/libze_validation_layer.so.1  # [linux]
+        - test -f ${PREFIX}/lib/libze_validation_layer.so.{{ test_version }}  # [linux]
   - name: level-zero-devel
     version: {{ version }}
-    script: move-level-zero-devel.sh
+    script: move-level-zero-devel.sh  # [linux]
+    script: move-level-zero-devel.bat  # [win]
     requirements:
       build:
         - {{ compiler('cxx') }}
@@ -59,14 +62,16 @@ outputs:
         oneAPI Level Zero development libs
     test:
       commands:
-        - test -f ${PREFIX}/lib/libze_loader.so   # [linux]
-        - test -f ${PREFIX}/lib/libze_tracing_layer.so   # [linux]
-        - test -f ${PREFIX}/lib/libze_validation_layer.so   # [linux]
-        - test -d ${PREFIX}/include/level_zero   # [linux]
-        - test -d ${PREFIX}/include/level_zero/loader   # [linux]
-        - test -d ${PREFIX}/include/level_zero/layers   # [linux]
-        - test -f ${PREFIX}/lib/pkgconfig/libze_loader.pc   # [linux]
-        - test -f ${PREFIX}/lib/pkgconfig/level-zero.pc   # [linux]
+        - dir "%LIBRARY_LIB%"  # [win]
+        - dir "%LIBRARY_INC%"  # [win]
+        - test -f ${PREFIX}/lib/libze_loader.so  # [linux]
+        - test -f ${PREFIX}/lib/libze_tracing_layer.so  # [linux]
+        - test -f ${PREFIX}/lib/libze_validation_layer.so  # [linux]
+        - test -d ${PREFIX}/include/level_zero  # [linux]
+        - test -d ${PREFIX}/include/level_zero/loader  # [linux]
+        - test -d ${PREFIX}/include/level_zero/layers  # [linux]
+        - test -f ${PREFIX}/lib/pkgconfig/libze_loader.pc  # [linux]
+        - test -f ${PREFIX}/lib/pkgconfig/level-zero.pc  # [linux]
 
 about:
   home: https://github.com/oneapi-src/level-zero
