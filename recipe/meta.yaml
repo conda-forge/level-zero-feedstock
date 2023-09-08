@@ -38,7 +38,7 @@ outputs:
     test:
       commands:
         - ls -A1 ${PREFIX}/lib  # [linux]
-        - dir "%LIBRARY_BIN%"  # [win]
+        - dir /S "%LIBRARY_BIN%"  # [win]
         - test -f ${PREFIX}/lib/libze_loader.so.1  # [linux]
         - test -f ${PREFIX}/lib/libze_loader.so.{{ test_version }}  # [linux]
         - test -f ${PREFIX}/lib/libze_tracing_layer.so.1  # [linux]
@@ -63,7 +63,7 @@ outputs:
     test:
       commands:
         - dir "%LIBRARY_LIB%"  # [win]
-        - dir "%LIBRARY_INC%"  # [win]
+        - dir /S "%LIBRARY_INC%"  # [win]
         - test -f ${PREFIX}/lib/libze_loader.so  # [linux]
         - test -f ${PREFIX}/lib/libze_tracing_layer.so  # [linux]
         - test -f ${PREFIX}/lib/libze_validation_layer.so  # [linux]
