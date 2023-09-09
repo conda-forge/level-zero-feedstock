@@ -3,7 +3,7 @@
 mkdir build
 mkdir install
 
-cmake -GNinja -DCMAKE_INSTALL_PREFIX="./install" \
+cmake ${CMAKE_ARGS} -GNinja -DCMAKE_INSTALL_PREFIX="./install" \
     -S ${SRC_DIR}/level-zero \
     -B ./build \
     -Wno-dev
