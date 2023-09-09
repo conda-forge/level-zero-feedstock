@@ -3,9 +3,10 @@
 mkdir build
 mkdir install
 
-cmake -DCMAKE_INSTALL_PREFIX="${SRC_DIR}/install" \
+cmake -GNinja -DCMAKE_INSTALL_PREFIX="./install" \
     -S ${SRC_DIR}/level-zero \
-    -B ${SRC_DIR}/build \
+    -B ./build \
     -Wno-dev
-cmake --build ${SRC_DIR}/build --config Release -- -j${CPU_COUNT}
-cmake --build ${SRC_DIR}/build --config Release --target install
+
+cmake --build ./build --config Release
+cmake --build ./build --config Release --target install
