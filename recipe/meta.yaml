@@ -12,7 +12,7 @@ source:
     folder: level-zero
 
 build:
-  number: 1
+  number: 2
   skip: true  # [not (x86 and (linux or win))]
 
 requirements:
@@ -39,6 +39,7 @@ outputs:
       commands:
         - ls -A1 ${PREFIX}/lib  # [linux]
         - dir /S "%LIBRARY_BIN%"  # [win]
+        - if not exist %LIBRARY_BIN%\\ze_loader.dll exit 1  # [win]
         - test -f ${PREFIX}/lib/libze_loader.so.1  # [linux]
         - test -f ${PREFIX}/lib/libze_loader.so.{{ test_version }}  # [linux]
         - test -f ${PREFIX}/lib/libze_tracing_layer.so.1  # [linux]
@@ -63,6 +64,7 @@ outputs:
     test:
       commands:
         - dir "%LIBRARY_LIB%"  # [win]
+        - if not exist %LIBRARY_LIB%\\ze_loader.lib exit 1  # [win]
         - dir /S "%LIBRARY_INC%"  # [win]
         - test -f ${PREFIX}/lib/libze_loader.so  # [linux]
         - test -f ${PREFIX}/lib/libze_tracing_layer.so  # [linux]
