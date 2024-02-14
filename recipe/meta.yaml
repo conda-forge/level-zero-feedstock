@@ -40,6 +40,8 @@ outputs:
         - ls -A1 ${PREFIX}/lib  # [linux]
         - dir /S "%LIBRARY_BIN%"  # [win]
         - if not exist %LIBRARY_BIN%\\ze_loader.dll exit 1  # [win]
+        - if not exist %LIBRARY_BIN%\\ze_tracing_layer.dll exit 1  # [win]
+        - if not exist %LIBRARY_BIN%\\ze_validation_layer.dll exit 1  # [win]
         - test -f ${PREFIX}/lib/libze_loader.so.1  # [linux]
         - test -f ${PREFIX}/lib/libze_loader.so.{{ test_version }}  # [linux]
         - test -f ${PREFIX}/lib/libze_tracing_layer.so.1  # [linux]
@@ -65,6 +67,8 @@ outputs:
       commands:
         - dir "%LIBRARY_LIB%"  # [win]
         - if not exist %LIBRARY_LIB%\\ze_loader.lib exit 1  # [win]
+        - if not exist %LIBRARY_LIB%\\ze_tracing_layer.lib exit 1  # [win]
+        - if not exist %LIBRARY_LIB%\\ze_validation_layer.lib exit 1  # [win]
         - dir /S "%LIBRARY_INC%"  # [win]
         - test -f ${PREFIX}/lib/libze_loader.so  # [linux]
         - test -f ${PREFIX}/lib/libze_tracing_layer.so  # [linux]
