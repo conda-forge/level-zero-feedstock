@@ -7,9 +7,10 @@ if errorlevel 1 exit 1
 
 if not exist "%LIBRARY_BIN%\ze_loader.dll" exit 1
 
-copy /Y ".\install\bin\ze_tracing_layer.dll" "%LIBRARY_BIN%"
+REM the DLL is installed into LIB folder by mistake
+copy /Y ".\install\lib\ze_tracing_layer.dll" "%LIBRARY_BIN%"
 if errorlevel 1 exit 1
 
-copy /Y ".\install\bin\ze_validation_layer.dll" "%LIBRARY_BIN%"
+copy /Y ".\install\lib\ze_validation_layer.dll" "%LIBRARY_BIN%"
 if errorlevel 1 exit 1
 

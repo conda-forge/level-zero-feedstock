@@ -11,8 +11,8 @@ if errorlevel 1 exit 1
 if not exist "%LIBRARY_LIB%\ze_loader.lib" exit 1
 
 copy /Y ".\install\lib\ze_tracing_layer.lib" "%LIBRARY_LIB%"
-if %ERRORLEVEL% 1 exit 1
+if errorlevel 1 exit 1
 
 copy /Y ".\install\lib\ze_validation_layer.lib" "%LIBRARY_LIB%"
-if %ERRORLEVEL% 1 exit 1
+if errorlevel 1 exit 1
 
