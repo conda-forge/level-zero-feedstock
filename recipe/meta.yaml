@@ -1,4 +1,4 @@
-{% set version = "1.15.13" %}
+{% set version = "1.16.0" %}
 {% set test_version = ".".join(version.split('.')[:2] + ['0']) %}
 {% set ze_version = "1.3" %}
 
@@ -8,7 +8,7 @@ package:
 
 source:
   - url: https://github.com/oneapi-src/level-zero/archive/refs/tags/v{{ version }}.tar.gz
-    sha256: fadda7306dc05c279a9dfc0c60749846351ce5ac7186692201220acb02c59787
+    sha256: e5bf9caddeabf58b73252ada5390a78772001d91ec853ee12636811aeb66db41
     folder: level-zero
 
 build:
@@ -40,6 +40,8 @@ outputs:
         - ls -A1 ${PREFIX}/lib  # [linux]
         - dir /S "%LIBRARY_BIN%"  # [win]
         - if not exist %LIBRARY_BIN%\\ze_loader.dll exit 1  # [win]
+        - if not exist %LIBRARY_BIN%\\ze_tracing_layer.dll exit 1  # [win]
+        - if not exist %LIBRARY_BIN%\\ze_validation_layer.dll exit 1  # [win]
         - test -f ${PREFIX}/lib/libze_loader.so.1  # [linux]
         - test -f ${PREFIX}/lib/libze_loader.so.{{ test_version }}  # [linux]
         - test -f ${PREFIX}/lib/libze_tracing_layer.so.1  # [linux]
@@ -65,6 +67,8 @@ outputs:
       commands:
         - dir "%LIBRARY_LIB%"  # [win]
         - if not exist %LIBRARY_LIB%\\ze_loader.lib exit 1  # [win]
+        - if not exist %LIBRARY_LIB%\\ze_tracing_layer.lib exit 1  # [win]
+        - if not exist %LIBRARY_LIB%\\ze_validation_layer.lib exit 1  # [win]
         - dir /S "%LIBRARY_INC%"  # [win]
         - test -f ${PREFIX}/lib/libze_loader.so  # [linux]
         - test -f ${PREFIX}/lib/libze_tracing_layer.so  # [linux]
