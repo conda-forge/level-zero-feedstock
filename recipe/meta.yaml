@@ -20,6 +20,7 @@ requirements:
     - {{ compiler('cxx') }}
     - cmake
     - ninja
+    - mako
 
 outputs:
   - name: level-zero
