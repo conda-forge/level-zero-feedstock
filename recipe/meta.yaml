@@ -12,7 +12,7 @@ source:
     folder: level-zero
 
 build:
-  number: 0
+  number: 1
   skip: true  # [not (x86 and (linux or win))]
 
 requirements:
@@ -55,6 +55,9 @@ outputs:
     version: {{ version }}
     script: move-level-zero-devel.sh  # [linux]
     script: move-level-zero-devel.bat  # [win]
+    build:
+      run_exports:
+        - {{ pin_subpackage('level-zero', max_pin="x") }}
     requirements:
       build:
         - {{ compiler('cxx') }}
@@ -95,3 +98,4 @@ extra:
   recipe-maintainers:
     - oleksandr-pavlyk
     - kurapov-peter
+    - ZzEeKkAa
