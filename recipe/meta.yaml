@@ -1,5 +1,5 @@
 {% set version = "1.17.45" %}
-{% set test_version = ".".join(version.split('.')[:2] + ['0']) %}
+{% set so_version1 = ".".join(version.split('.')[:1]) %}
 {% set ze_version = "1.3" %}
 
 package:
@@ -45,12 +45,12 @@ outputs:
         - if not exist %LIBRARY_BIN%\\ze_loader.dll exit 1  # [win]
         - if not exist %LIBRARY_BIN%\\ze_tracing_layer.dll exit 1  # [win]
         - if not exist %LIBRARY_BIN%\\ze_validation_layer.dll exit 1  # [win]
-        - test -f ${PREFIX}/lib/libze_loader.so.1  # [linux]
-        - test -f ${PREFIX}/lib/libze_loader.so.{{ test_version }}  # [linux]
-        - test -f ${PREFIX}/lib/libze_tracing_layer.so.1  # [linux]
-        - test -f ${PREFIX}/lib/libze_tracing_layer.so.{{ test_version }}  # [linux]
-        - test -f ${PREFIX}/lib/libze_validation_layer.so.1  # [linux]
-        - test -f ${PREFIX}/lib/libze_validation_layer.so.{{ test_version }}  # [linux]
+        - test -f ${PREFIX}/lib/libze_loader.so.{{ so_version1 }}  # [linux]
+        - test -f ${PREFIX}/lib/libze_loader.so.{{ version }}  # [linux]
+        - test -f ${PREFIX}/lib/libze_tracing_layer.so.{{ so_version1 }}  # [linux]
+        - test -f ${PREFIX}/lib/libze_tracing_layer.so.{{ version }}  # [linux]
+        - test -f ${PREFIX}/lib/libze_validation_layer.so.{{ so_version1 }}  # [linux]
+        - test -f ${PREFIX}/lib/libze_validation_layer.so.{{ version }}  # [linux]
   - name: level-zero-devel
     version: {{ version }}
     script: move-level-zero-devel.sh  # [linux]
