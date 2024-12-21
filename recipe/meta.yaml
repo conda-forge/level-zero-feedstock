@@ -10,9 +10,11 @@ source:
   - url: https://github.com/oneapi-src/level-zero/archive/refs/tags/v{{ version }}.tar.gz
     sha256: b0bea0a09d1a68f68ecf8694e58a60e199fa5785f91c2fd59f026133bc1c4f28
     folder: level-zero
+    patches:
+    - patches/001-pkg-config.patch
 
 build:
-  number: 0
+  number: 1
   skip: true  # [not (x86 and (linux or win))]
 
 requirements:
@@ -99,3 +101,4 @@ extra:
     - oleksandr-pavlyk
     - kurapov-peter
     - ZzEeKkAa
+    - ilya-lavrenov

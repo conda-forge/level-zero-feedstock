@@ -195,6 +195,7 @@ Feedstock Maintainers
 =====================
 
 * [@ZzEeKkAa](https://github.com/ZzEeKkAa/)
+* [@ilya-lavrenov](https://github.com/ilya-lavrenov/)
 * [@kurapov-peter](https://github.com/kurapov-peter/)
 * [@oleksandr-pavlyk](https://github.com/oleksandr-pavlyk/)
 
