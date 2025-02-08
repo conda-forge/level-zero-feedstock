@@ -10,6 +10,8 @@ source:
   - url: https://github.com/oneapi-src/level-zero/archive/refs/tags/v{{ version }}.tar.gz
     sha256: 90712a17c849a6bf35523c5fb9fce9f8bea58af24a06a86ba4986d14b6ecf977
     folder: level-zero
+    patches:
+      - no_link_h_for_osx.patch
 
 build:
   number: 1
