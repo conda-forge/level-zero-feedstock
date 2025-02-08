@@ -1,0 +1,22 @@
+diff --git a/source/inc/ze_util.h b/source/inc/ze_util.h
+index 1a80266..daf802c 100644
+--- a/source/inc/ze_util.h
++++ b/source/inc/ze_util.h
+@@ -39,7 +39,9 @@ inline void getLastErrorString(std::string &errorValue) {
+ #  define GET_FUNCTION_PTR(LIB, FUNC_NAME) reinterpret_cast<void *>(GetProcAddress(LIB, FUNC_NAME))
+ #  define string_copy_s strncpy_s
+ #else
+-#  include <link.h>
++#  if defined(__linux__)
++#    include <link.h>
++#  endif
+ #  include <dlfcn.h>
+ #  define HMODULE void*
+ #  define MAKE_LIBRARY_NAME(NAME, VERSION)    "lib" NAME ".so." VERSION
+@@ -156,4 +158,4 @@ inline std::string getenv_string ( const char* name){
+     if ((nullptr == env))
+         return "";
+     return std::string(env);
+-}
+\ No newline at end of file
++}
