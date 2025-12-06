@@ -1,4 +1,4 @@
-{% set version = "1.26.0" %}
+{% set version = "1.26.1" %}
 {% set so_version1 = ".".join(version.split('.')[:1]) %}
 {% set ze_version = "1.3" %}
 
@@ -8,7 +8,7 @@ package:
 
 source:
   - url: https://github.com/oneapi-src/level-zero/archive/refs/tags/v{{ version }}.tar.gz
-    sha256: 252dc01ffd2134ba25563d3851b755ff81cbda5982410296d09f3f54c118c16f
+    sha256: 3ad06e8968d87a3ded7cfd009ef0fa8f7faba20d77a3a87b9c3ccfb0d449049c
     folder: level-zero
 
 build:
