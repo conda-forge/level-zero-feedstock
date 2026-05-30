@@ -1,0 +1,57 @@
+From: Mark Harfouche <mark@ramonaoptics.com>
+Date: Tue, 26 May 2026 00:00:00 +0000
+Subject: [PATCH] loader: optional build-time-configured driver search directory
+
+The Linux driver discovery (v1.28.x) gained a stat()-based pre-filter
+(getLibrarySearchPaths) that only checks LD_LIBRARY_PATH, the system locations
+(/lib, /usr/lib, multiarch), and /etc/ld.so.conf. A driver installed in a
+relocatable prefix that is not on any of those (e.g. a conda environment) is
+filtered out before the dlopen that would otherwise load it -- even though its
+soname is already in the default knownDriverNames list.
+
+Add an optional compile-time macro ZE_LOADER_EXTRA_DRIVER_DIR. When defined by
+the build system to a directory (a package can set it to its own install
+prefix's lib dir), that directory is appended to the search paths immediately
+after LD_LIBRARY_PATH -- so a user's LD_LIBRARY_PATH still wins -- and before
+the system locations. Undefined by default, so upstream/system builds are
+unchanged. CMake injects the macro as a quoted string literal via
+target_compile_definitions when ZE_LOADER_EXTRA_DRIVER_DIR is passed at
+configure time.
+diff --git a/source/loader/CMakeLists.txt b/source/loader/CMakeLists.txt
+index cbebf44..b7943af 100644
+--- a/source/loader/CMakeLists.txt
++++ b/source/loader/CMakeLists.txt
+@@ -38,3 +38,13 @@ else()
+     )
+ endif()
+ 
++# An optional build-time configured directory to search for drivers, in
++# addition to LD_LIBRARY_PATH and the system locations.  Packaging (e.g.
++# conda-forge) sets this to the install prefix's lib dir so that a driver
++# co-installed in the same prefix is discovered by default.  CMake handles the
++# string quoting for the compile definition.
++if(DEFINED ZE_LOADER_EXTRA_DRIVER_DIR AND NOT ZE_LOADER_EXTRA_DRIVER_DIR STREQUAL "")
++    target_compile_definitions(${TARGET_LOADER_NAME}
++        PRIVATE ZE_LOADER_EXTRA_DRIVER_DIR="${ZE_LOADER_EXTRA_DRIVER_DIR}")
++endif()
++
+diff --git a/source/loader/linux/driver_discovery_lin.cpp b/source/loader/linux/driver_discovery_lin.cpp
+index f349b7e..a200a14 100644
+--- a/source/loader/linux/driver_discovery_lin.cpp
++++ b/source/loader/linux/driver_discovery_lin.cpp
+@@ -46,6 +46,15 @@ static std::vector<std::string> getLibrarySearchPaths() {
+     auto split = splitPaths(ldLibPath);
+     paths.insert(paths.end(), split.begin(), split.end());
+   }
++#ifdef ZE_LOADER_EXTRA_DRIVER_DIR
++  // A driver directory configured at build time (e.g. the install prefix's lib
++  // dir, baked in at compile time and relocated on install).  Searched right
++  // after LD_LIBRARY_PATH -- so a user's LD_LIBRARY_PATH still takes precedence
++  // -- but before the system locations.  This lets a driver co-installed in the
++  // same prefix (e.g. a conda environment) be discovered by default, without
++  // having to set ZE_ENABLE_ALT_DRIVERS.
++  paths.push_back(ZE_LOADER_EXTRA_DRIVER_DIR);
++#endif
+ #if defined(ANDROID)
+   paths.push_back("/vendor/lib64");
+ #else

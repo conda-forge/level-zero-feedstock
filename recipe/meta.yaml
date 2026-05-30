@@ -9,9 +9,15 @@ source:
   - url: https://github.com/oneapi-src/level-zero/archive/refs/tags/v{{ version }}.tar.gz
     sha256: c65a8d0944fbf762ea917d3094ef5f17c54a097cfb9e10f347dabafe50b2fe20
     folder: level-zero
+    patches:
+      # Add an optional compile-time driver search directory to the loader;
+      # build.sh sets it to $PREFIX/lib so a driver co-installed in this conda
+      # prefix (e.g. libze_intel_npu.so.1) is found without ZE_ENABLE_ALT_DRIVERS.
+      # Searched after LD_LIBRARY_PATH. See patch header for details.
+      - patches/0001-loader-build-time-driver-dir.patch
 
 build:
-  number: 0
+  number: 1
   skip: true  # [not (x86 and (linux or win))]
 
 requirements:
