@@ -15,7 +15,7 @@ source:
 
 build:
   number: 1
-  skip: not ((x86_64 and (linux or win)) or (riscv64 and linux))
+  skip: not ((linux and (x86_64 or aarch64 or riscv64)) or (win and x86_64))
 
 outputs:
   - staging:
