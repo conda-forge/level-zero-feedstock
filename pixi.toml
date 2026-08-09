@@ -29,6 +29,12 @@ description = "Build level-zero-feedstock with variant linux_64_ directly (witho
 [tasks."inspect-linux_64_"]
 cmd = "inspect_artifacts --recipe-dir recipe -m .ci_support/linux_64_.yaml"
 description = "List contents of level-zero-feedstock packages built for variant linux_64_"
+[tasks."build-linux_aarch64_"]
+cmd = "rattler-build build --recipe recipe -m .ci_support/linux_aarch64_.yaml"
+description = "Build level-zero-feedstock with variant linux_aarch64_ directly (without setup scripts)"
+[tasks."inspect-linux_aarch64_"]
+cmd = "inspect_artifacts --recipe-dir recipe -m .ci_support/linux_aarch64_.yaml"
+description = "List contents of level-zero-feedstock packages built for variant linux_aarch64_"
 [tasks."build-linux_riscv64_"]
 cmd = "rattler-build build --recipe recipe -m .ci_support/linux_riscv64_.yaml"
 description = "Build level-zero-feedstock with variant linux_riscv64_ directly (without setup scripts)"
