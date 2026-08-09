@@ -1,0 +1,123 @@
+schema_version: 1
+
+context:
+  version: 1.29.0
+  so_version1: ${{ version | split('.') | first }}
+
+recipe:
+  name: intel-level-zero
+  version: ${{ version }}
+
+source:
+  url: https://github.com/oneapi-src/level-zero/archive/refs/tags/v${{ version }}.tar.gz
+  sha256: c65a8d0944fbf762ea917d3094ef5f17c54a097cfb9e10f347dabafe50b2fe20
+  target_directory: level-zero
+
+build:
+  number: 1
+  skip: not (x86_64 and (linux or win))
+
+outputs:
+  - staging:
+      name: level-zero-build
+    build:
+      script: build
+    requirements:
+      build:
+        - ${{ compiler('cxx') }}
+        - ${{ stdlib('c') }}
+        - cmake
+        - ninja
+        - mako
+
+  - package:
+      name: level-zero
+    inherit:
+      from: level-zero-build
+      run_exports: false
+    build:
+      script: move-level-zero
+    requirements:
+      build:
+        - ${{ compiler('cxx') }}
+        - ${{ stdlib('c') }}
+    tests:
+      - package_contents:
+          files:
+            - if: linux
+              then:
+                - lib/libze_loader.so.${{ so_version1 }}
+                - lib/libze_loader.so.${{ version }}
+                - lib/libze_tracing_layer.so.${{ so_version1 }}
+                - lib/libze_tracing_layer.so.${{ version }}
+                - lib/libze_validation_layer.so.${{ so_version1 }}
+                - lib/libze_validation_layer.so.${{ version }}
+            - if: win
+              then:
+                - Library/bin/ze_loader.dll
+                - Library/bin/ze_tracing_layer.dll
+                - Library/bin/ze_validation_layer.dll
+    about:
+      homepage: https://github.com/oneapi-src/level-zero
+      repository: https://github.com/oneapi-src/level-zero
+      license: MIT
+      license_file: level-zero/LICENSE
+      summary: oneAPI Level Zero libraries
+      description: oneAPI Level Zero
+
+  - package:
+      name: level-zero-devel
+    inherit:
+      from: level-zero-build
+      run_exports: false
+    build:
+      script: move-level-zero-devel
+    requirements:
+      build:
+        - ${{ compiler('cxx') }}
+        - ${{ stdlib('c') }}
+      run:
+        - ${{ pin_subpackage('level-zero', exact=True) }}
+      run_exports:
+        - ${{ pin_subpackage('level-zero', upper_bound='x') }}
+    tests:
+      - package_contents:
+          include:
+            - level_zero/ze_api.h
+            - level_zero/loader/ze_loader.h
+            - level_zero/layers/zel_tracing_api.h
+          files:
+            - if: linux
+              then:
+                - lib/libze_loader.so
+                - lib/libze_tracing_layer.so
+                - lib/libze_validation_layer.so
+                - lib/pkgconfig/libze_loader.pc
+                - lib/pkgconfig/level-zero.pc
+            - if: win
+              then:
+                - Library/lib/ze_loader.lib
+                - Library/lib/ze_tracing_layer.lib
+                - Library/lib/ze_validation_layer.lib
+    about:
+      homepage: https://github.com/oneapi-src/level-zero
+      repository: https://github.com/oneapi-src/level-zero
+      license: MIT
+      license_file: level-zero/LICENSE
+      summary: oneAPI Level Zero development libraries
+      description: oneAPI Level Zero development libraries
+
+about:
+  homepage: https://github.com/oneapi-src/level-zero
+  repository: https://github.com/oneapi-src/level-zero
+  license: MIT
+  license_file: level-zero/LICENSE
+  summary: Intel(R) Level Zero libraries
+
+extra:
+  feedstock-name: level-zero
+  recipe-maintainers:
+    - oleksandr-pavlyk
+    - kurapov-peter
+    - ZzEeKkAa
+    - ilya-lavrenov
