@@ -95,7 +95,8 @@ about:
 extra:
   feedstock-name: level-zero
   recipe-maintainers:
-    - oleksandr-pavlyk
-    - kurapov-peter
-    - ZzEeKkAa
     - ilya-lavrenov
+    - kurapov-peter
+    - napetrov
+    - oleksandr-pavlyk
+    - ZzEeKkAa
