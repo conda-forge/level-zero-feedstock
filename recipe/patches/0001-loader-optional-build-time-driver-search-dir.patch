@@ -1,7 +1,7 @@
-From b2097e838aee2205b110f3314283f563f5c4f146 Mon Sep 17 00:00:00 2001
+From 8ad1c67af674ebd050f995757c4ac3ddabb58491 Mon Sep 17 00:00:00 2001
 From: Mark Harfouche <mark@ramonaoptics.com>
 Date: Tue, 26 May 2026 00:00:00 +0000
-Subject: [PATCH] loader: optional build-time-configured driver search
+Subject: [PATCH 1/2] loader: optional build-time-configured driver search
  directory
 
 The Linux driver discovery (v1.28.x) gained a stat()-based pre-filter
@@ -25,7 +25,7 @@ configure time.
  2 files changed, 19 insertions(+)
 
 diff --git a/source/loader/CMakeLists.txt b/source/loader/CMakeLists.txt
-index cbebf449..b7943afc 100644
+index cbebf44..b7943af 100644
 --- a/source/loader/CMakeLists.txt
 +++ b/source/loader/CMakeLists.txt
 @@ -38,3 +38,13 @@ else()
@@ -43,7 +43,7 @@ index cbebf449..b7943afc 100644
 +endif()
 +
 diff --git a/source/loader/linux/driver_discovery_lin.cpp b/source/loader/linux/driver_discovery_lin.cpp
-index f349b7e9..a200a14d 100644
+index f349b7e..a200a14 100644
 --- a/source/loader/linux/driver_discovery_lin.cpp
 +++ b/source/loader/linux/driver_discovery_lin.cpp
 @@ -46,6 +46,15 @@ static std::vector<std::string> getLibrarySearchPaths() {
@@ -62,3 +62,6 @@ index f349b7e9..a200a14d 100644
  #if defined(ANDROID)
    paths.push_back("/vendor/lib64");
  #else
+-- 
+2.56.0
+

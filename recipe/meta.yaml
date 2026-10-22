@@ -14,8 +14,11 @@ source:
       # Optional compile-time driver search directory for the loader; build.sh
       # sets it to $PREFIX/lib so a driver co-installed in this conda prefix
       # (e.g. libze_intel_npu.so.1) is found without ZE_ENABLE_ALT_DRIVERS.
-      # Drop once #541 is in a release.
+      # Discovered drivers are dlopen()ed by full path. Drop once #541 is in
+      # a release.
       - patches/0001-loader-optional-build-time-driver-search-dir.patch
+      - patches/0002-loader-dlopen-discovered-driver-full-path.patch
+      - patches/0003-loader-extra-driver-dir-runtime-length.patch
 
 build:
   number: 1
