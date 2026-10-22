@@ -1,0 +1,106 @@
+From 32e4023ef22390df112c06bdf658dd669c79a59c Mon Sep 17 00:00:00 2001
+From: "Petrov, Nikolay A" <nikolay.a.petrov@intel.com>
+Date: Wed, 21 Oct 2026 20:39:35 -0700
+Subject: [PATCH 2/2] loader: rename to L0_LOADER_EXTRA_DRIVER_DIR, dlopen
+ discovered full path
+
+Rename the build-time option to L0_LOADER_EXTRA_DRIVER_DIR so it does not
+look like a ZE_* runtime environment variable.
+
+Discovery on Linux used to check that a known driver existed in one of the
+search paths and then dlopen() the bare soname, leaving the dynamic linker
+to pick the file. The file that was checked and the file that was loaded
+could therefore differ, and a directory only on the search-path list (such
+as the build-time extra directory) passed the check without being
+reachable by dlopen(). Return the full path of the first match and load
+that path instead.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+---
+ source/loader/CMakeLists.txt                 |  4 ++--
+ source/loader/linux/driver_discovery_lin.cpp | 21 ++++++++++++--------
+ 2 files changed, 15 insertions(+), 10 deletions(-)
+
+diff --git a/source/loader/CMakeLists.txt b/source/loader/CMakeLists.txt
+index b7943af..60bb6f7 100644
+--- a/source/loader/CMakeLists.txt
++++ b/source/loader/CMakeLists.txt
+@@ -43,8 +43,8 @@ endif()
+ # conda-forge) sets this to the install prefix's lib dir so that a driver
+ # co-installed in the same prefix is discovered by default.  CMake handles the
+ # string quoting for the compile definition.
+-if(DEFINED ZE_LOADER_EXTRA_DRIVER_DIR AND NOT ZE_LOADER_EXTRA_DRIVER_DIR STREQUAL "")
++if(DEFINED L0_LOADER_EXTRA_DRIVER_DIR AND NOT L0_LOADER_EXTRA_DRIVER_DIR STREQUAL "")
+     target_compile_definitions(${TARGET_LOADER_NAME}
+-        PRIVATE ZE_LOADER_EXTRA_DRIVER_DIR="${ZE_LOADER_EXTRA_DRIVER_DIR}")
++        PRIVATE L0_LOADER_EXTRA_DRIVER_DIR="${L0_LOADER_EXTRA_DRIVER_DIR}")
+ endif()
+ 
+diff --git a/source/loader/linux/driver_discovery_lin.cpp b/source/loader/linux/driver_discovery_lin.cpp
+index a200a14..c9916e7 100644
+--- a/source/loader/linux/driver_discovery_lin.cpp
++++ b/source/loader/linux/driver_discovery_lin.cpp
+@@ -46,14 +46,14 @@ static std::vector<std::string> getLibrarySearchPaths() {
+     auto split = splitPaths(ldLibPath);
+     paths.insert(paths.end(), split.begin(), split.end());
+   }
+-#ifdef ZE_LOADER_EXTRA_DRIVER_DIR
++#ifdef L0_LOADER_EXTRA_DRIVER_DIR
+   // A driver directory configured at build time (e.g. the install prefix's lib
+   // dir, baked in at compile time and relocated on install).  Searched right
+   // after LD_LIBRARY_PATH -- so a user's LD_LIBRARY_PATH still takes precedence
+   // -- but before the system locations.  This lets a driver co-installed in the
+   // same prefix (e.g. a conda environment) be discovered by default, without
+   // having to set ZE_ENABLE_ALT_DRIVERS.
+-  paths.push_back(ZE_LOADER_EXTRA_DRIVER_DIR);
++  paths.push_back(L0_LOADER_EXTRA_DRIVER_DIR);
+ #endif
+ #if defined(ANDROID)
+   paths.push_back("/vendor/lib64");
+@@ -117,16 +117,20 @@ static std::vector<std::string> getLibrarySearchPaths() {
+   return paths;
+ }
+ 
+-// Main function: search for a library file in all known library paths
+-static bool libraryExistsInSearchPaths(const std::string& filename) {
++// Main function: search for a library file in all known library paths.
++// Returns the full path of the first match, or an empty string if none.
++// The full path is what gets passed to dlopen(), so the file that is loaded
++// is the one that was found here, not whatever the dynamic linker resolves
++// the bare soname to.
++static std::string findLibraryInSearchPaths(const std::string& filename) {
+   auto paths = getLibrarySearchPaths();
+   for (const auto& dir : paths) {
+     std::string fullPath = dir + "/" + filename;
+     if (fileExistsReadable(fullPath)) {
+-      return true;
++      return fullPath;
+     }
+   }
+-  return false;
++  return std::string();
+ }
+ 
+ namespace loader {
+@@ -147,7 +151,8 @@ std::vector<DriverLibraryPath> discoverEnabledDrivers() {
+   if (altDrivers == nullptr) {
+     // Standard drivers - not custom
+     for (auto path : knownDriverNames) {
+-      if (libraryExistsInSearchPaths(path)) {
++      std::string fullPath = findLibraryInSearchPaths(path);
++      if (!fullPath.empty()) {
+         // Extract the base library name for robust driver type detection
+         // path is like "libze_intel_gpu.so.1"
+         std::string libName = path;
+@@ -174,7 +179,7 @@ std::vector<DriverLibraryPath> discoverEnabledDrivers() {
+           driverType = ZEL_DRIVER_TYPE_NPU;
+         }
+ 
+-        enabledDrivers.emplace_back(path, false, driverType);
++        enabledDrivers.emplace_back(fullPath, false, driverType);
+       }
+     }
+   } else {
+-- 
+2.56.0
+
